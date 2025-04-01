@@ -1,0 +1,48 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Capture Image</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <video id="video" autoplay class="w-full rounded-lg mb-4"></video>
+        <canvas id="canvas" class="hidden"></canvas>
+        <a href="#" id="captureLink" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300 inline-block">
+            <i class="fas fa-link mr-2"></i> Click Here
+        </a>
+        <img id="photo" alt="Captured Image" class="mt-4 w-full rounded-lg" />
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const photo = document.getElementById('photo');
+        const captureLink = document.getElementById('captureLink');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(error => {
+                console.error('Error accessing camera:', error);
+            });
+
+        const takePicture = () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            photo.src = canvas.toDataURL('image/png');
+        };
+
+        captureLink.addEventListener('click', () => {
+            setTimeout(() => {
+                takePicture();
+            }, 500); // ថតរូបបន្ទាប់ពី 0.5 វិនាទី
+        });
+    </script>
+</body>
+</html>
